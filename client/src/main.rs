@@ -57,15 +57,19 @@ fn main() -> std::io::Result<()> {
     let (commands, alias_to_cmd) = get_commands(args.faucet_account_file.is_some());
 
     let faucet_account_file = args.faucet_account_file.unwrap_or_else(|| "".to_string());
+    let mf = Some( "/Users/liangjinfeng/Libra/libra/scripts/cli/client.mnemonic".to_string());
+    let toml = "/Users/liangjinfeng/Libra/libra/scripts/cli/trusted_peers.config.toml";
+    let port = "8000";
+    let host = "ac.testnet.libra.org";
 
     let mut client_proxy = ClientProxy::new(
-        &args.host,
-        &args.port,
-        &args.validator_set_file,
+        host,
+        port,
+        toml,
         &faucet_account_file,
         args.sync,
         args.faucet_server,
-        args.mnemonic_file,
+        mf,
     )
     .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, &format!("{}", e)[..]))?;
 
