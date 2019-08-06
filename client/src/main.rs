@@ -52,13 +52,14 @@ struct Args {
 fn main() -> std::io::Result<()> {
     let _logger = set_default_global_logger(false /* async */, None);
     crash_handler::setup_panic_handler();
-    let args = Args::from_args();
+//    let args = Args::from_args();
 
-    let (commands, alias_to_cmd) = get_commands(args.faucet_account_file.is_some());
-
-    let faucet_account_file = args.faucet_account_file.unwrap_or_else(|| "".to_string());
-    let mf = Some( "/Users/liangjinfeng/Libra/libra/scripts/cli/client.mnemonic".to_string());
-    let toml = "/Users/liangjinfeng/Libra/libra/scripts/cli/trusted_peers.config.toml";
+//
+//    let (commands, alias_to_cmd) = get_commands(args.faucet_account_file.is_some());
+//
+//    let faucet_account_file = args.faucet_account_file.unwrap_or_else(|| "".to_string());
+    let mf = Some( "/Users/liangjinfeng/dev/LiCode/libra/scripts/cli/client.mnemonic".to_string());
+    let toml = "/Users/liangjinfeng/dev/LiCode/libra/scripts/cli/trusted_peers.config.toml";
     let port = "8000";
     let host = "ac.testnet.libra.org";
 
@@ -67,7 +68,7 @@ fn main() -> std::io::Result<()> {
         port,
         toml,
         "",
-        args.sync,
+        false,
         None,
         mf,
     )
@@ -79,12 +80,12 @@ fn main() -> std::io::Result<()> {
     if let Err(e) = test_ret {
         println!(
             "Not able to connect to validator at {}:{}, error {:?}",
-            args.host, args.port, e
+            host, port, e
         );
         return Ok(());
     }
-    let cli_info = format!("Connected to validator at: {}:{}", args.host, args.port);
-    print_help(&cli_info, &commands);
+    let cli_info = format!("Connected to validator at: {}:{}", host, port);
+//    print_help(&cli_info, &commands);
     println!("Please, input commands: \n");
 
     let config = Config::builder()
@@ -101,15 +102,15 @@ fn main() -> std::io::Result<()> {
                 if params.is_empty() {
                     continue;
                 }
-                match alias_to_cmd.get(&params[0]) {
-                    Some(cmd) => cmd.execute(&mut client_proxy, &params),
-                    None => match params[0] {
-                        "quit" | "q!" => break,
-                        "help" | "h" => print_help(&cli_info, &commands),
-                        "" => continue,
-                        x => println!("Unknown command: {:?}", x),
-                    },
-                }
+//                match alias_to_cmd.get(&params[0]) {
+//                    Some(cmd) => cmd.execute(&mut client_proxy, &params),
+//                    None => match params[0] {
+//                        "quit" | "q!" => break,
+//                        "help" | "h" => print_help(&cli_info, &commands),
+//                        "" => continue,
+//                        x => println!("Unknown command: {:?}", x),
+//                    },
+//                }
             }
             Err(ReadlineError::Interrupted) => {
                 println!("CTRL-C");
