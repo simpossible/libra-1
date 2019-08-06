@@ -66,9 +66,9 @@ fn main() -> std::io::Result<()> {
         host,
         port,
         toml,
-        &faucet_account_file,
+        "",
         args.sync,
-        args.faucet_server,
+        None,
         mf,
     )
     .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, &format!("{}", e)[..]))?;
