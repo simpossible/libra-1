@@ -73,7 +73,9 @@ fn main() -> std::io::Result<()> {
         mf,
     )
     .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, &format!("{}", e)[..]))?;
-
+    client_proxy.print_all_accounts();
+    client_proxy.create_next_account(false);
+    client_proxy.create_next_account(false);
     // Test connection to validator
     let test_ret = client_proxy.test_validator_connection();
 

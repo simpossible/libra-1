@@ -45,6 +45,7 @@ impl WalletLibrary {
         let mut rng = EntropyRng::new();
         let data: [u8; 32] = rng.gen();
         let mnemonic = Mnemonic::mnemonic(&data).unwrap();
+        println!("==== mnemonic is {}",mnemonic.to_string());
         Self::new_from_mnemonic(mnemonic)
     }
 
@@ -114,6 +115,7 @@ impl WalletLibrary {
         let address = child.get_address()?;
         let child = self.key_leaf;
         self.key_leaf.increment();
+        println!("the key leaf is {:?}",self.key_leaf);
         match self.addr_map.insert(address, child) {
             Some(_) => Err(WalletError::LibraWalletGeneric(
                 "This address is already in your wallet".to_string(),
