@@ -163,8 +163,8 @@ impl ClientProxy {
             .enumerate()
             .map(|(ref_id, acc_data): (usize, &AccountData)| (acc_data.address, ref_id))
             .collect::<HashMap<AccountAddress, usize>>();
-
-        Ok(ClientProxy {
+        println!("======address_to_ref_id{:?}",address_to_ref_id);
+       Ok(ClientProxy {
             client,
             accounts,
             address_to_ref_id,
@@ -883,6 +883,7 @@ impl ClientProxy {
             file_path.push(CLIENT_WALLET_MNEMONIC_FILE);
             file_path
         };
+        println!("========{:?}",wallet_recovery_file_path);
 
         let wallet = if let Ok(recovered_wallet) = io_utils::recover(&wallet_recovery_file_path) {
             recovered_wallet

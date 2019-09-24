@@ -144,6 +144,7 @@ impl KeyFactory {
         let mut info = KeyFactory::INFO_PREFIX.to_vec();
         info.extend_from_slice(&le_n);
 
+
         let hkdf_expand = Hkdf::<Sha3_256>::expand(&self.master(), Some(&info), 32)?;
         let sk = Ed25519PrivateKey::try_from(hkdf_expand.as_slice())
             .expect("Unable to convert into private key");
@@ -167,13 +168,15 @@ impl Seed {
     /// particular Mnemonic and salt. WalletLibrary implements a fixed salt, but a user could
     /// choose a user-defined salt instead of the hardcoded one.
     pub fn new(mnemonic: &Mnemonic, salt: &str) -> Seed {
-        let mut mac = CryptoHmac::new(Sha3::sha3_256(), mnemonic.to_string().as_bytes());
+        let s =  mnemonic.to_string();
+        let mut mac = CryptoHmac::new(Sha3::sha3_256(), s.as_bytes());
         let mut output = [0u8; 32];
 
         let mut msalt = KeyFactory::MNEMONIC_SALT_PREFIX.to_vec();
         msalt.extend_from_slice(salt.as_bytes());
 
         pbkdf2(&mut mac, &msalt, 2048, &mut output);
+        println!("{:?}",output);
         Seed(output)
     }
 }
