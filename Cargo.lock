@@ -1835,6 +1835,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "iosTest"
+version = "0.1.0"
+dependencies = [
+ "crypto 0.1.0",
+ "libra_wallet 0.1.0",
+ "rust-crypto 0.2.36 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sha2 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sha3 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "iovec"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"

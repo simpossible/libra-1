@@ -1,0 +1,21 @@
+[package]
+name = "iosTest"
+version = "0.1.0"
+authors = ["simpossible <963571744@qq.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+libra_wallet = { path = "../libra_wallet" }
+sha3 = "0.8.2"
+sha2 = "0.8.0"
+rust-crypto = "0.2"
+
+[dependencies.libra_crypto]
+path = "../../crypto/crypto"
+package = "crypto"
+
+[lib]
+name = "app"
+crate-type = ["staticlib"]

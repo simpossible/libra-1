@@ -58,8 +58,8 @@ fn main() -> std::io::Result<()> {
 //    let (commands, alias_to_cmd) = get_commands(args.faucet_account_file.is_some());
 //
 //    let faucet_account_file = args.faucet_account_file.unwrap_or_else(|| "".to_string());
-    let mf = Some( "/Users/liangjinfeng/dev/LiCode/libra/scripts/cli/client.mnemonic".to_string());
-    let toml = "/Users/liangjinfeng/dev/LiCode/libra/scripts/cli/trusted_peers.config.toml";
+    let mf = Some( "/Users/simp/dev/libra_dev/libra/scripts/cli/client.mnemonic".to_string());
+    let toml = "/Users/simp/dev/libra_dev/libra/scripts/cli/consensus_peers.config.toml";
     let port = "8000";
     let host = "ac.testnet.libra.org";
 

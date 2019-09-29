@@ -170,15 +170,15 @@ impl<'a> U11BitReader<'a> {
 }
 
 /// BitWriter writes data to a vector at the granularity of 11 bits.
-struct U11BitWriter {
-    bytes: Vec<u8>,
+pub struct U11BitWriter {
+    pub bytes: Vec<u8>,
     unused: u16,
     buffer: u16,
 }
 
 impl U11BitWriter {
     /// Create a new `BitWriter` around the given writer.
-    fn new(mnemonic_len: usize) -> U11BitWriter {
+    pub fn new(mnemonic_len: usize) -> U11BitWriter {
         U11BitWriter {
             bytes: Vec::with_capacity(11 * mnemonic_len / 8 + 1),
             unused: 8,
@@ -187,7 +187,7 @@ impl U11BitWriter {
     }
 
     /// Write 11 bits.
-    fn write_u11(&mut self, value: u16) {
+    pub fn write_u11(&mut self, value: u16) {
         let mut nbits_remaining = 11;
 
         // Fill up a partial byte.
@@ -217,7 +217,7 @@ impl U11BitWriter {
         }
     }
 
-    fn write_buffer(&mut self) {
+    pub fn write_buffer(&mut self) {
         if self.unused != 8 {
             self.bytes.push(self.buffer as u8);
         }
@@ -228,7 +228,7 @@ impl U11BitWriter {
 const MASKS: [u16; 8] = [0, 0b1, 0b11, 0b111, 0b1111, 0b11111, 0b11_1111, 0b111_1111];
 
 // TODO: update this to hashmap or trie.
-const WORDS: [&str; 2048] = [
+pub const WORDS: [&str; 2048] = [
     "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd",
     "abuse", "access", "accident", "account", "accuse", "achieve", "acid", "acoustic", "acquire",
     "across", "act", "action", "actor", "actress", "actual", "adapt", "add", "addict", "address",
