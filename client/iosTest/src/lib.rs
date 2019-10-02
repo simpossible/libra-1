@@ -110,7 +110,7 @@ pub extern fn seed_from_m_s<'a>(mnemonic_ptr:*const c_char,salt_ptr:*const c_cha
 
 
     //第二步 处理盐
-    let mut mac = CryptoHmac::new(Sha3::sha3_256(), salt_str.as_bytes());
+    let mut mac = CryptoHmac::new(Sha3::sha3_256(), mnevec_slice.as_bytes());
     let mut output = [0u8; 32];
 
     let ass = &output;
@@ -131,8 +131,50 @@ pub extern fn seed_from_m_s<'a>(mnemonic_ptr:*const c_char,salt_ptr:*const c_cha
 
     return a_str;
 //    return generate_data(op,32);
+}
 
 
+unsafe fn make_slice<'a>(ptr: *const u8, len: usize) -> &'a [u8] {
+    // place pointer address and length in contiguous memory
+    let x: [usize; 2] = [ptr as usize, len];
+
+    // cast pointer to array as pointer to slice
+    let slice_ptr = &x as * const _ as *const &[u8];
+
+    // dereference pointer to slice, so we get a slice
+    *slice_ptr
+}
+
+#[no_mangle]
+pub extern fn rust_hkdf(first_ptr:*const u8,firstLen:usize,second_ptr:*mut u8,secondLen:usize,length_ptr:&mut u8) -> *mut u8 {
+    let mut seed = [0u8,32];
+
+
+    let f_p = unsafe{ make_slice(first_ptr,firstLen)};
+    let s_p =unsafe { make_slice(second_ptr,secondLen)};
+
+    let hkdf_r = Hkdf::<Sha3_256>::extract(Some(f_p), s_p);
+    let hkdf_r = match hkdf_r { Ok(a) => a,_=>{panic!("")} };
+
+    println!("f_p  is {:?}",hkdf_r);
+
+    let mut newArray = [0u8;32];
+//    for i in 0..32  {
+//        newArray[i] = hkdf_r[i];
+//    }
+
+    newArray.copy_from_slice(hkdf_r.as_slice());
+
+
+    *length_ptr = 32;
+    let boxa = Box::into_raw(Box::new(newArray));
+    let pt = boxa as * mut u8;
+    return pt;
+
+
+
+//    pub const MASTER_KEY_SALT: &'static [u8] = b"LIBRA WALLET: master key salt$";
+//
 
 
 }

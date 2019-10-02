@@ -123,7 +123,7 @@ impl KeyFactory {
     /// to derive both the Master
     pub fn new(seed: &Seed) -> Result<Self> {
         let hkdf_extract = Hkdf::<Sha3_256>::extract(Some(KeyFactory::MASTER_KEY_SALT), &seed.0)?;
-
+        println!("----{:?}",hkdf_extract);
         Ok(Self {
             master: Master::from(&hkdf_extract[..32]),
         })
