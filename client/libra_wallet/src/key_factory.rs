@@ -86,15 +86,18 @@ impl ExtendedPrivKey {
 
     /// Returns the PublicKey associated to a particular ExtendedPrivKey
     pub fn get_public(&self) -> Ed25519PublicKey {
+        println!("private is {:}",&self.private_key);
         (&self.private_key).into()
     }
 
-    /// Computes the sha3 hash of the PublicKey and attempts to construct a Libra AccountAddress
+    /// Computes the sha3 hash Ed25519PublicKeyof the PublicKey and attempts to construct a Libra AccountAddress
     /// from the raw bytes of the pubkey hash
     pub fn get_address(&self) -> Result<AccountAddress> {
         let public_key = self.get_public();
+        println!("pub key is {:}",public_key);
         let hash = *HashValue::from_sha3_256(&public_key.to_bytes()).as_ref();
         let addr = AccountAddress::try_from(&hash[..])?;
+        println!("addr is {:}",addr);
         Ok(addr)
     }
 

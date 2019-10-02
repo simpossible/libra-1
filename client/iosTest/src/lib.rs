@@ -4,7 +4,8 @@ use std::ffi::{CString};
 use std::io::Bytes;
 use std::fmt::Error;
 use libra_wallet::mnemonic::{U11BitWriter,WORDS};
-
+use std::{convert::TryFrom, ops::AddAssign};
+use byteorder::{ByteOrder, LittleEndian};
 use sha2::{Digest, Sha256};
 use sha3::Sha3_256;
 use std::ffi::CStr;
@@ -176,5 +177,53 @@ pub extern fn rust_hkdf(first_ptr:*const u8,firstLen:usize,second_ptr:*mut u8,se
 //    pub const MASTER_KEY_SALT: &'static [u8] = b"LIBRA WALLET: master key salt$";
 //
 
+}
+
+#[no_mangle]
+pub extern fn rust_hkdf_privateKey(masterData_ptr:* const u8,masterLen:usize,index:u64,resultLen_ptr:&mut u32) -> *mut u8 {
+
+     let preFix :& [u8] = b"LIBRA WALLET: derived key$";
+
+    let m_p = unsafe{ make_slice(masterData_ptr,masterLen)};
+
+    let mut le_n = [0u8; 8];
+    LittleEndian::write_u64(&mut le_n, index);
+    let mut info =preFix.to_vec();
+    info.extend_from_slice(&le_n);
+
+
+    let hkdf_expand = Hkdf::<Sha3_256>::expand(m_p, Some(&info), 32);
+    let hkdf_expand = match hkdf_expand {Ok(a)=>a,_=>{panic!("error")}};
+    let sk = Ed25519PrivateKey::try_from(hkdf_expand.as_slice())
+        .expect("Unable to convert into private key");
+    let key = sk.to_bytes();
+
+    let mut cp = [0u8;32];
+    cp.copy_from_slice(&key);
+
+    *resultLen_ptr = 32;
+
+    let boxa = Box::into_raw(Box::new(cp));
+    let pt = boxa as * mut u8;
+    return pt;
+}
+
+#[no_mangle]
+pub extern fn pubkey_from_private(privateData_ptr:*const u8,privateLen:usize,resultLen_ptr:&mut u8) -> *mut u8 {
+    let p_p = unsafe{ make_slice(privateData_ptr,privateLen)};
+    let privateKey = Ed25519PrivateKey::try_from(p_p);
+    let pk = match privateKey { Ok(p) =>p,_=>{panic!("no")} };
+
+    let pubkey:Ed25519PublicKey = (&pk).into();
+    let pubSlice = pubkey.to_bytes();
+    println!("pub key is {:?}",pubSlice);
+
+
+//    let mut a = [0u8;32];
+//    a.copy_from_slice(&pubSlice);
+    *resultLen_ptr = 32;
+    let boxa = Box::into_raw(Box::new(pubSlice));
+    let pt = boxa as * mut u8;
+    return pt;
 
 }
