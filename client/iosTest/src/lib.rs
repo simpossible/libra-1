@@ -8,9 +8,11 @@ use std::{convert::TryFrom, ops::AddAssign};
 use byteorder::{ByteOrder, LittleEndian};
 use sha2::{Digest, Sha256};
 use sha3::Sha3_256;
+use hex;
 use std::ffi::CStr;
 use crypto::{hmac::Hmac as CryptoHmac, pbkdf2::pbkdf2, sha3::Sha3};
 use libra_crypto::{ed25519::*, hash::HashValue, hkdf::Hkdf, traits::SigningKey};
+//use types::account_address::AccountAddress;
 //use bytes::{BytesMut, BufMut, BigEndian};
 //https://www.greyblake.com/blog/2017-08-10-exposing-rust-library-to-c/
 
@@ -197,6 +199,7 @@ pub extern fn rust_hkdf_privateKey(masterData_ptr:* const u8,masterLen:usize,ind
     let sk = Ed25519PrivateKey::try_from(hkdf_expand.as_slice())
         .expect("Unable to convert into private key");
     let key = sk.to_bytes();
+    println!("the sk is {:?}",key);
 
     let mut cp = [0u8;32];
     cp.copy_from_slice(&key);
@@ -226,4 +229,17 @@ pub extern fn pubkey_from_private(privateData_ptr:*const u8,privateLen:usize,res
     let pt = boxa as * mut u8;
     return pt;
 
+}
+
+#[no_mangle]
+pub extern fn getAccountAddr(pubData_ptr:*const u8,pubLen:usize,resultLen_ptr:&mut u8)-> * mut u8 {
+    let p_p = unsafe{ make_slice(pubData_ptr,pubLen)};
+    let hash = *HashValue::from_sha3_256(p_p).as_ref();
+    *resultLen_ptr = 32;
+//    let addr = AccountAddress::try_from(&hash[..]);
+//    let addr = match addr  { Ok(a)=>a,Err(e)=>{AccountAddress::new([0u8;32])} };
+
+    let boxa = Box::into_raw(Box::new(hash));
+    let pt = boxa as * mut u8;
+    return pt;
 }

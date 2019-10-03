@@ -86,7 +86,7 @@ impl ExtendedPrivKey {
 
     /// Returns the PublicKey associated to a particular ExtendedPrivKey
     pub fn get_public(&self) -> Ed25519PublicKey {
-        println!("private is {:}",&self.private_key);
+        println!("private is {}",self.private_key);
         (&self.private_key).into()
     }
 
